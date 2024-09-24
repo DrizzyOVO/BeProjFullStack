@@ -1,0 +1,188 @@
+"use client" 
+import {Typography} from "@mui/material";
+import Button from "@mui/material/Button";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { isAdminLoading } from "../../store/selectors/isAdminLoading";
+import { adminEmailState } from "../../store/selectors/adminEmail";
+import { adminState } from "../../store/atoms/admin";
+import { BookOpenIcon, Bars3BottomRightIcon, XMarkIcon } from '@heroicons/react/24/solid'
+import axios from "axios";
+import { onAuthStateChanged } from "firebase/auth";
+import { RingSpinner } from "react-spinners-kit";
+import { auth } from "../../firebase"; 
+import { UserAuth } from "../../AuthContext"; 
+
+function AdminAppbar() { 
+    const navigate = useNavigate();
+    const adminLoading = useRecoilValue(isAdminLoading); 
+    const adminEmail = useRecoilValue(adminEmailState); 
+    const setAdmin = useSetRecoilState(adminState); 
+    const [open, setOpen] = useState(false);
+    const { logOut } = UserAuth(); 
+
+    const handleSignOut = async () => {
+        try {   
+            await logOut(); 
+            navigate("/adminui") 
+        } catch(error) { 
+            console.log(error);     
+        }
+    }
+
+    const init = async () => {
+
+
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            console.log('currentUser :- ' + currentUser?.email);
+            if(currentUser?.email) {
+                setAdmin({ 
+                    isLoading: false, 
+                    adminEmail: currentUser?.email, 
+                })
+            } else { 
+                setAdmin({ 
+                    isLoading: false, 
+                    adminEmail: null, 
+                })
+            }
+            });
+            return () => unsubscribe();      
+    
+    };
+
+    useEffect(() => {
+        init(); 
+    }, [setAdmin]); 
+
+    // className="block w-64 select-none rounded-2xl bg-gradient-to-tr from-indigo-700 to-indigo-500 py-3 px-6 text-center align-middle font-sans text-lg font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+
+    if(adminLoading) { 
+        <div className="spinner">
+            <RingSpinner size={50} color="yellow"
+                loading={adminLoading} />
+        </div>
+    }
+
+    if (adminEmail) { 
+        return  <div className={`mb-20`}>
+        <div className='shadow-md w-full fixed top-0 left-0 z-50'>
+            <div className='md:flex items-center justify-between bg-gray-100 py-4 md:px-10 px-7'>
+
+            <div className='font-bold text-2xl cursor-pointer flex items-center gap-1'>
+
+                <svg xmlns="http://www.w3.org/2000/svg" fill="#4f46e5" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                </svg>
+                <span onClick={() => navigate('/adminui')}>Coursera</span>
+
+            </div>
+
+            <div onClick={()=>setOpen(!open)} className='absolute right-8 top-6 cursor-pointer md:hidden w-7 h-7'>
+                {
+                    open ? <XMarkIcon/> : <Bars3BottomRightIcon />
+                }
+            </div>
+
+            <ul className={`z-[-1] md:flex md:items-center md:pb-0 pb-12 absolute md:static  md:z-auto left-0 w-full md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in bg-gray-100 ${open ? 'top-12' : 'top-[-490px]'}`}>
+
+                    {/* <li className='md:ml-8 md:my-0 my-7 font-semibold'>
+                        <button
+                            className="font-semibold w-auto select-none rounded-2xl bg-transparent from-indigo-700 to-indigo-500 py-2 px-2 text-center align-middle font-sans text-lg uppercase text-indigo-700 shadow-md transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none "
+                            onClick={() => {
+                                navigate("/adminui") 
+                            }}
+                        >MY COURSES</button>
+                    </li>
+
+
+                    <li className='md:ml-8 md:my-0 my-7 font-semibold'>
+                        <button
+                            className="font-semibold w-auto select-none rounded-2xl bg-transparent from-indigo-700 to-indigo-500 py-2 px-2 text-center align-middle font-sans text-lg uppercase text-indigo-700 shadow-md transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none "
+                            onClick={() => {
+                                navigate("/adminui") 
+                            }}
+                        >CREATE COURSE</button>
+                    </li> */}
+
+                    <li className='md:ml-8 md:my-0 my-7 font-semibold'>
+                        <button
+                            className="font-semibold w-auto select-none rounded-2xl bg-gradient-to-tr from-indigo-700 to-indigo-500 py-2 px-4 text-center align-middle font-sans text-lg uppercase text-white shadow-md transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none "
+                            onClick={() => {
+                                handleSignOut(); 
+                                setAdmin({  
+                                    isLoading: false, 
+                                    adminEmail: null, 
+                                })
+                                navigate("/adminui") 
+                            }}
+                        >Logout</button>
+                    </li>
+
+            </ul>
+
+            </div>
+            </div>
+            </div>
+
+
+
+
+    } else {
+        return <div className={`mb-20`}>
+            
+        <div className='shadow-md w-full fixed top-0 left-0 z-50'>
+        <div className='md:flex items-center justify-between bg-gray-100 py-4 md:px-10 px-7'>
+
+        <div className='font-bold text-2xl cursor-pointer flex items-center gap-1'>
+
+            <svg xmlns="http://www.w3.org/2000/svg" fill="#4f46e5" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+            </svg>
+            <span onClick={() => navigate('/adminui')}>Coursera</span>
+
+        </div>
+
+        <div onClick={()=>setOpen(!open)} className='absolute right-8 top-6 cursor-pointer md:hidden w-7 h-7'>
+            {
+                open ? <XMarkIcon/> : <Bars3BottomRightIcon />
+            }
+        </div>
+
+        <ul className={`md:flex md:items-center md:pb-0 pb-12 absolute md:static  md:z-auto z-[-1] left-0 w-full md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in bg-gray-100 ${open ? 'top-12' : 'top-[-490px]'}`}>
+
+                <li className='md:ml-8 md:my-0 my-7 font-semibold'>
+                    <button
+                        className="font-semibold w-auto select-none rounded-2xl bg-gradient-to-tr from-indigo-700 to-indigo-500 py-2 px-4 text-center align-middle font-sans text-lg uppercase text-white shadow-md transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none "
+                        onClick={() => {
+                            navigate("/adminui/signup") 
+                        }}
+                    >SIGNUP</button>
+                </li>
+
+                <li className='md:ml-8 md:my-0 my-7 font-semibold'>
+                    <button
+                        className="font-semibold w-auto select-none rounded-2xl bg-transparent from-indigo-700 to-indigo-500 py-2 px-4 text-center align-middle font-sans text-lg uppercase text-indigo-700 shadow-md transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none "
+                        onClick={() => {
+                            navigate("/adminui/signin")
+                        }}
+                    >SIGNIN</button>
+                </li>
+            
+        </ul>
+
+        </div>
+
+        </div>
+        </div>
+
+
+
+
+    }
+}
+
+export default AdminAppbar; 
+
+
