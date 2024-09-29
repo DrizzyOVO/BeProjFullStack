@@ -33,13 +33,10 @@ function AdminAppbar() {
 
     const init = async () => {
 
-
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            console.log('currentUser :- ' + currentUser?.email);
-            if(currentUser?.email) {
+            if(adminEmail) {
                 setAdmin({ 
                     isLoading: false, 
-                    adminEmail: currentUser?.email, 
+                    adminEmail: adminEmail, 
                 })
             } else { 
                 setAdmin({ 
@@ -47,14 +44,14 @@ function AdminAppbar() {
                     adminEmail: null, 
                 })
             }
-            });
-            return () => unsubscribe();      
+            
+        
     
     };
 
     useEffect(() => {
-        init(); 
-    }, [setAdmin]); 
+        init()
+    }, []); 
 
     // className="block w-64 select-none rounded-2xl bg-gradient-to-tr from-indigo-700 to-indigo-500 py-3 px-6 text-center align-middle font-sans text-lg font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
 
@@ -75,7 +72,7 @@ function AdminAppbar() {
                 <svg xmlns="http://www.w3.org/2000/svg" fill="#4f46e5" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
                 </svg>
-                <span onClick={() => navigate('/adminui')}>Coursera</span>
+                <span onClick={() => navigate('/adminui')}>NeuroAI</span>
 
             </div>
 
@@ -140,7 +137,7 @@ function AdminAppbar() {
             <svg xmlns="http://www.w3.org/2000/svg" fill="#4f46e5" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
             </svg>
-            <span onClick={() => navigate('/adminui')}>Coursera</span>
+            <span onClick={() => navigate('/adminui')}>NeuroAI</span>
 
         </div>
 

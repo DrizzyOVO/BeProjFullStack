@@ -96,21 +96,78 @@ function DocSignup() {
                                             //     secretCode: code
                                             // })
 
-                                            try{ 
 
-                                                await handleSignUp(email, password); 
-                                                await handleSignInOnSignUp(email, password);
-                                                setAdmin({ 
-                                                    isLoading: false, 
-                                                    adminEmail: email, 
-                                                }); 
-                                                navigate("/"); 
+                                            const response = await axios.post(`http://localhost:4000/admin/signup`, {
+                                                email: email,
+                                                password: password
+                                            })
+                                            
+                                            if (response) { 
+                    
+                                                if (response.data.message === 'User already exists'){  
+                                                    let data = response.data;
+                                                    // await handleSignInOnSignUp(email, password);  
+                                                    setAdmin({ 
+                                                        isLoading: false, 
+                                                        adminEmail: data.email
+                                                    }); 
+                                                    navigate("/adminui");
+                                                    toast.success('Created admin sucessfully')
 
-                                            } catch { 
+                                                } else if (response.data.message === 'Created user sucessfully') {
 
-                                                toast.error('something went wrong') 
+                                                    // await handleSignUp(email, password); 
+                                                    // await handleSignInOnSignUp(email, password); 
+                                                    // navigate("/");
+                                                    let data = response.data;
+                                                    setAdmin({ 
+                                                        isLoading: false, 
+                                                        adminEmail: data.email
+                                                    }); 
+                                                    navigate("/adminui");
+                                                    toast.success('Created admin sucessfully')
 
+                                                } else if (response.data.message === "Incorrect password"){
+
+                                                    toast.error('Incorrect Password', {duration: 4000})
+                                                    setAdmin({ 
+                                                        isLoading: false, 
+                                                        adminEmail: null
+                                                    }); 
+
+                                                } else {
+
+                                                    toast.error("Try again.", {duration: 4000})
+                                                    setAdmin({ 
+                                                        isLoading: false, 
+                                                        adminEmail: null
+                                                    }); 
+                                                    navigate("/adminui/signup");
+
+                                                } 
+                    
+                                            } else { 
+                                                toast.error('Try again!', {duration: 4000})
+                                                navigate("/adminui/signup");
                                             }
+
+
+
+                                            // try{ 
+
+                                            //     await handleSignUp(email, password); 
+                                            //     await handleSignInOnSignUp(email, password);
+                                            //     setAdmin({ 
+                                            //         isLoading: false, 
+                                            //         adminEmail: email, 
+                                            //     }); 
+                                            //     navigate("/"); 
+
+                                            // } catch { 
+
+                                            //     toast.error('something went wrong') 
+
+                                            // }
 
                                             
 

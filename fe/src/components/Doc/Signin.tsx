@@ -25,12 +25,43 @@ function DocSignin() {
     const { user, googleSignIn, emailPassSignIn, emailPassSignInAdmin,  emailPassSignUp, signOut } = UserAuth();  
     
     const handleSignIn = async (email: string, password: string) => { 
-        try { 
-            await emailPassSignInAdmin(email, password); 
-            navigate("/adminui") 
-        } catch(error) { 
-            console.log(error); 
+
+        const res = await axios.post(`http://localhost:4000/admin/login`, {
+            email: email,
+            password: password
+        }, {
+             headers: {
+                "Content-type": "application/json"
+            }
+        }); 
+
+        if (res.data.message === 'Invalid username or password'){
+
+            toast.error('Invalid username or password', {duration: 7000});
+
+        } else if (res.data.message === 'Invalid input') {
+
+            toast.error('Invalid username or password', {duration: 7000}); 
+
+        } else {
+                    
+            localStorage.setItem("token", res.data.token);
+            setAdmin({ 
+                isLoading: false, 
+                adminEmail: email
+            })
+            navigate("/adminui"); 
+
         }
+
+
+
+        // try { 
+        //     await emailPassSignInAdmin(email, password); 
+        //     navigate("/adminui") 
+        // } catch(error) { 
+        //     console.log(error); 
+        // }
     }
 
     return <div>   

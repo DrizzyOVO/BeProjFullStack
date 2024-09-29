@@ -17,10 +17,10 @@ const AdminPage = () => {
     return (
         <div className="mt-32" style={{justifyContent: "center" }}>
             <h1 style={{  fontWeight: 600, display: "flex", justifyContent: "center" }} className="sm:text-2xl md:text-4xl lg:text-5xl xl:text-7xl">
-                Welcome to <span className='text-indigo-500'>&nbsp;coursera Admin!</span>
+                Welcome to <span className='text-indigo-500'>&nbsp;NeuroAi Admin!</span>
             </h1>
             <h3 style={{ fontWeight: 600, display: "flex", justifyContent: "center" }} className="sm:text-xl md:text-3xl lg:text-4xl xl:text-5xl mt-7">
-                Go to the <span className='text-indigo-500'>&nbsp;create course&nbsp;</span> section and create em!!!
+                Go to the <span className='text-indigo-500'>&nbsp;Signup&nbsp;</span> page and cure em!!!
             </h3>
 
             <div className='m-auto mt-32 justify-center'>
@@ -28,7 +28,7 @@ const AdminPage = () => {
                     Become an <span className='text-indigo-500'>&nbsp;Instructor!</span>
                 </h1> */}
                 <h3 style={{ fontWeight: 500, display: "flex", justifyContent: "center" }} className="sm:text-sm md:text-base lg:text-xl xl:text-2xl mt-7">
-                  return back to student ui.
+                  return back to patient.ui
                 </h3>
                 <h3 style={{ fontWeight: 600, display: "flex", justifyContent: "center" }} className="sm:text-xl md:text-3xl lg:text-4xl xl:text-5xl mt-7">
                   <button
@@ -36,7 +36,7 @@ const AdminPage = () => {
                             onClick={() => {
                                 navigate("/") 
                             }}
-                        >coursera for students</button>
+                        >NeuroAi for Patients</button>
                 </h3>
       </div>
 

@@ -135,15 +135,44 @@ function Signin() {
     const [password, setPassword] = useState("")
     const setUser = useSetRecoilState(userState); 
 
-    const { user, googleSignIn, emailPassSignIn, emailPassSignUp, signOut } = UserAuth();  
+    // const { user, googleSignIn, emailPassSignIn, emailPassSignUp, signOut } = UserAuth();  
 
     const handleSignIn = async (email: string, password: string) => { 
-        try { 
-            await emailPassSignIn(email, password); 
-            navigate("/");
-        } catch(error) { 
-            console.log(error); 
+
+        const res = await axios.post(`http://localhost:4000/user/login`, {
+            email: email,
+            password: password
+        }, {
+             headers: {
+                "Content-type": "application/json"
+            }
+        }); 
+
+        if (res.data.message === 'Invalid username or password'){
+
+            toast.error('Invalid username or password', {duration: 7000});
+
+        } else if (res.data.message === 'Invalid input') {
+
+            toast.error('Invalid username or password', {duration: 7000}); 
+
+        } else {
+                    
+            localStorage.setItem("token", res.data.token);
+            setUser({ 
+                isLoading: false, 
+                userEmail: email
+            })
+            navigate("/"); 
+
         }
+
+        // try { 
+        //     await emailPassSignIn(email, password); 
+        //     navigate("/");
+        // } catch(error) { 
+        //     console.log(error); 
+        // }
     }
 
     return <div>   
@@ -184,7 +213,7 @@ function Signin() {
                                                 const parsedInput = signinInput.safeParse({email, password}); 
                                     
                                                 if(!parsedInput.success) {
-                                                    toast.error('invalid email / password \n password length more the 6 characters!', {duration: 4000})
+                                                    toast.error('invalid email / password \n password length more the 6 characters!', {duration: 7000})
                                                 } else { 
                                                     toast.loading("Please hold on, while we connect to our backend", {duration: 7000});
                                                     await handleSignIn(email, password); 

@@ -191,35 +191,35 @@ return (
 
                                             toast.loading("Please hold on, while we connect to our backend", {duration: 7000});
 
-                                            const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/signup`, {
+                                            const response = await axios.post(`http://localhost:4000/user/signup`, {
                                                 email: email,
                                                 password: password
                                             })
                                             
                                             if (response) { 
                     
-                                                if (response.data.message == 'User already exists'){  
+                                                if (response.data.message === 'User already exists'){  
                                                     let data = response.data;
-                                                    await handleSignInOnSignUp(email, password);  
+                                                    // await handleSignInOnSignUp(email, password);  
                                                     setUser({ 
                                                         isLoading: false, 
                                                         userEmail: data.email
                                                     }); 
                                                     navigate("/");
-                                                } else if (response.data.message == 'Created user sucessfully') {
+                                                } else if (response.data.message === 'Created user sucessfully') {
 
                                                     await handleSignUp(email, password); 
-                                                    await handleSignInOnSignUp(email, password); 
-                                                    navigate("/");
+                                                    // await handleSignInOnSignUp(email, password); 
+                                                    // navigate("/");
 
-                                                } else if (response.data.message == "Incorrect password"){
-                                                    toast.error('Incorrect Password')
+                                                } else if (response.data.message === "Incorrect password"){
+                                                    toast.error('Incorrect Password', {duration: 4000})
                                                     setUser({ 
                                                         isLoading: false, 
                                                         userEmail: null
                                                     }); 
                                                 } else {
-                                                    toast.error("Try again.")
+                                                    toast.error("Try again.", {duration: 4000})
                                                     setUser({ 
                                                         isLoading: false, 
                                                         userEmail: null
@@ -228,7 +228,7 @@ return (
                                                 } 
                     
                                             } else { 
-                                                toast.error('Try again!')
+                                                toast.error('Try again!', {duration: 4000})
                                                 navigate("/signup");
                                             }
                                         }}

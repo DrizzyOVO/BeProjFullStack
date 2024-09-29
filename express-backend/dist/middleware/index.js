@@ -23,15 +23,13 @@ const authenticateJwt = (req, res, next) => {
             // if(typeof payload == "string") { 
             //     return res.sendStatus(403); 
             // }
-            // console.log(payload);
-            req.headers["userId"] = payload.userId;
-            req.headers["email"] = payload.email;
+            req.headers["userId"] = payload.id;
             next();
         });
     }
     else {
         console.log("Nooooooooooooo");
-        return res.status(401).json({ email: null });
+        return res.sendStatus(401).json("Nooooooooo");
     }
 };
 exports.authenticateJwt = authenticateJwt;

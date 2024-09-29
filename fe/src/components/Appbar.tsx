@@ -115,12 +115,16 @@ import {
     MetroSpinner, JellyfishSpinner
 } from "react-spinners-kit";
 import { UserAuth } from "../AuthContext";
+import { adminEmailState } from "../store/selectors/adminEmail";
+import { adminState } from "../store/atoms/admin";
 
 function Appbar() {
     const navigate = useNavigate();
     const userLoading = useRecoilValue(isUserLoading); 
     const userEmail = useRecoilValue(userEmailState); 
+    const adminEmail = useRecoilValue(adminEmailState); 
     const setUser = useSetRecoilState(userState); 
+    const setAdmin = useSetRecoilState(adminState); 
     const [open, setOpen] = useState(false);
     const { logOut } = UserAuth(); 
 
@@ -133,33 +137,74 @@ function Appbar() {
     }
 
     const init = async () => {
-        console.log("userEmail :- " + userEmail);
+        // console.log("userEmail :- " + userEmail);
 
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            console.log('currentUser :- ' + currentUser?.email);
-            console.log("hehe :- " + currentUser?.email);
-            if(currentUser?.email) {
+        try{ 
+
+            if(userEmail) {
                 setUser({ 
                     isLoading: false, 
-                    userEmail: currentUser?.email
+                    userEmail: userEmail
+                })
+            } else if(adminEmail) {
+                setAdmin({ 
+                    isLoading: false, 
+                    adminEmail: adminEmail
                 })
             } else { 
                 setUser({ 
                     isLoading: false, 
                     userEmail: null
-                })
+                }); 
+                setAdmin({
+                    isLoading: false, 
+                    adminEmail: null
+                }); 
                 navigate("/");
             }
-        });
-        return () => unsubscribe();
 
-        
+        } catch(e) { 
+
+            setUser({ 
+                isLoading: false, 
+                userEmail: null
+            }); 
+            setAdmin({
+                isLoading: false, 
+                adminEmail: null
+            }); 
+            navigate("/");
+
+        }
+
+        // if(userEmail) {
+        //     setUser({ 
+        //         isLoading: false, 
+        //         userEmail: userEmail
+        //     })
+        // } else if(adminEmail) {
+        //     setAdmin({ 
+        //         isLoading: false, 
+        //         adminEmail: adminEmail
+        //     })
+        // } else { 
+        //     setUser({ 
+        //         isLoading: false, 
+        //         userEmail: null
+        //     }); 
+        //     setAdmin({
+        //         isLoading: false, 
+        //         adminEmail: null
+        //     }); 
+        //     navigate("/");
+        // }
+
     
     };
 
     useEffect(() => {
         init(); 
-    }, [setUser]); 
+    }, [setUser, setAdmin]); 
 
     if(userLoading) { 
         <div className="spinner">
@@ -183,7 +228,7 @@ function Appbar() {
                     onClick={() => {
                         navigate("/")
                     }}
-                >Coursera</span>
+                >NeuroAI</span>
 
             </div>
 
@@ -219,11 +264,12 @@ function Appbar() {
                         <button
                             className="font-semibold w-auto select-none rounded-2xl bg-gradient-to-tr from-indigo-700 to-indigo-500 py-2 px-4 text-center align-middle font-sans text-lg uppercase text-white shadow-md transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none "
                             onClick={() => {
-                                handleSignOut(); 
+                                // @ts-ignore 
+                                localStorage.setItem("token", null); 
                                 setUser({ 
                                     isLoading: false, 
                                     userEmail: null
-                                })
+                                }); 
                                 navigate("/") 
                             }}
                         >Logout</button>
@@ -252,7 +298,7 @@ function Appbar() {
                     onClick={() => {
                         navigate("/")
                     }}
-                >Coursera</span>
+                >NeuroAI</span>
 
             </div>
 
